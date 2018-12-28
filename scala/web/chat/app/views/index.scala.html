@@ -1,4 +1,4 @@
-@(loginForm: Form[LoginData])(implicit messages: Messages)
+@(loginForm: Form[LoginData])(errorMessage: String)(implicit messages: Messages)
 
 @main("Login") {
 @defining(play.core.PlayVersion.current) { version =>
@@ -8,6 +8,9 @@
     @helper.form(action = routes.HomeController.login) {
     @helper.inputText(loginForm("userName"))
     <input type="submit" value="Login"/>
+    }
+    @if(!errorMessage.isEmpty) {
+      <label>@errorMessage</label>
     }
   </div>
 </section>

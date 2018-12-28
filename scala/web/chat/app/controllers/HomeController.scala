@@ -20,18 +20,20 @@ class HomeController @Inject()(cc: ControllerComponents)(cache: CacheApi) extend
   )
 
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index(loginForm))
+    Ok(views.html.index(loginForm)(""))
   }
 
   val login = Action(parse.form(loginForm)) { implicit request =>
     val loginData = request.body
     var n = 0
     var finished = false
+    var errorMessage = ""
     while (!finished) {
       val locked = cache.setIfNotExists("users-lock", "writing", 1.seconds)
       if (locked) {
         val isRegistered = cache.set[String]("users").contains(loginData.userName)
         if (isRegistered) {
+          errorMessage = "This user name is already registered."
           finished = true
         } else {
           cache.set[String]("users").add(loginData.userName)
@@ -42,9 +44,10 @@ class HomeController @Inject()(cc: ControllerComponents)(cache: CacheApi) extend
       Thread.sleep(10)
       n += 1
       if (n >= 10) {
+        errorMessage = "System is busy. Please try it again later."
         finished = true
       }
     }
-    Ok(views.html.index(loginForm))
+    Ok(views.html.index(loginForm)(errorMessage))
   }
 }
