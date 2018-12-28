@@ -20,4 +20,9 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def index() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.index(loginForm))
   }
+
+  val login = Action(parse.form(loginForm)) { implicit request =>
+    val loginData = request.body
+    Ok(views.html.index(loginForm))
+  }
 }
