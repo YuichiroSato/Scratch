@@ -27,6 +27,7 @@ class HomeController @Inject()(cc: ControllerComponents)(cache: CacheApi) extend
     val loginData = request.body
     var n = 0
     var finished = false
+    var loginSuccess = false
     var errorMessage = ""
     while (!finished) {
       val locked = cache.setIfNotExists("users-lock", "writing", 1.seconds)
@@ -38,6 +39,7 @@ class HomeController @Inject()(cc: ControllerComponents)(cache: CacheApi) extend
         } else {
           cache.set[String]("users").add(loginData.userName)
           finished = true
+          loginSuccess = true
         }
         cache.remove("users-lock")
       }
@@ -48,6 +50,11 @@ class HomeController @Inject()(cc: ControllerComponents)(cache: CacheApi) extend
         finished = true
       }
     }
-    Ok(views.html.index(loginForm)(errorMessage))
+    if (loginSuccess) {
+      Redirect(routes.ListController.index)
+        .withSession("userName" -> loginData.userName)
+    } else {
+      Ok(views.html.index(loginForm)(errorMessage))
+    }
   }
 }
