@@ -1,12 +1,14 @@
-@()
+@(loginForm: Form[LoginData])(implicit messages: Messages)
 
-@main("") {
+@main("Login") {
 @defining(play.core.PlayVersion.current) { version =>
 
 <section id="content">
   <div class="wrapper doc">
-    <article>
-    </article>
+    @helper.form(action = routes.HomeController.login) {
+    @helper.inputText(loginForm("userName"))
+    <input type="submit" value="Login"/>
+    }
   </div>
 </section>
 }
