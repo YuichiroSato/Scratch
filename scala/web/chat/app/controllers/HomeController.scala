@@ -3,12 +3,12 @@ package controllers
 import javax.inject._
 import models.LoginData
 import play.api._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.mvc._
-import play.api.i18n.I18nSupport
-import scala.concurrent.duration._
 import play.api.cache.redis.CacheApi
+import play.api.data.Forms._
+import play.api.data._
+import play.api.i18n.I18nSupport
+import play.api.mvc._
+import scala.concurrent.duration._
 
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents)(cache: CacheApi) extends AbstractController(cc) with I18nSupport {
