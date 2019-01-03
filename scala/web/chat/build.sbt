@@ -15,4 +15,5 @@ libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 libraryDependencies += "com.github.karelcemus" %% "play-redis" % "2.3.0"
 libraryDependencies += jdbc
+libraryDependencies += "org.playframework.anorm" %% "anorm-akka" % "2.6.0"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1200-jdbc41"
