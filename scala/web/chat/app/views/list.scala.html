@@ -1,10 +1,18 @@
-@()
+@(chatRoomList: List[ChatRoom])
 
 @main("Chat Room List") {
 @defining(play.core.PlayVersion.current) { version =>
 
 <section id="content">
     <div class="wrapper doc">
+        <ul>
+            @for(chatRoom <- chatRoomList) {
+                <li>
+                    <div>Description @chatRoom.description</div>
+                    <div>Created @chatRoom.created_time</div>
+                </li>
+            }
+        </ul>
     </div>
 </section>
 }
