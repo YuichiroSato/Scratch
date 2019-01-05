@@ -1,10 +1,14 @@
-@(chatRoomList: List[ChatRoom])
+@(chatRoomList: List[ChatRoom])(createRoomForm: Form[ChatRoomData])(implicit messages: Messages)
 
 @main("Chat Room List") {
 @defining(play.core.PlayVersion.current) { version =>
 
 <section id="content">
     <div class="wrapper doc">
+        @helper.form(action = routes.ListController.createChatRoom) {
+            @helper.inputText(createRoomForm("description"))
+            <input type="submit" value="Create Room"/>
+        }
         <ul>
             @for(chatRoom <- chatRoomList) {
                 <li>
