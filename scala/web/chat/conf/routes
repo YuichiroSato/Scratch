@@ -9,6 +9,7 @@ POST    /                                   controllers.HomeController.login
 GET     /rooms                              controllers.ListController.index
 POST    /rooms                              controllers.ListController.createChatRoom
 GET     /rooms/:id                          controllers.RoomController.index(id: Long)
+GET     /rooms/:id/connect                  controllers.RoomController.connect(id: Long)
 
 
 # Map static resources from the /public folder to the /assets URL path
