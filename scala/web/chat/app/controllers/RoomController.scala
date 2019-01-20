@@ -2,7 +2,8 @@ package controllers
 
 import actors.ChatRoomActor
 import akka.actor._
-import akka.stream.Materializer
+import akka.stream._
+import akka.stream.scaladsl._
 import javax.inject._
 import models.ChatRoom
 import org.joda.time.DateTime
@@ -10,12 +11,13 @@ import play.api.mvc._
 import play.api.libs.streams.ActorFlow
 import play.api.db.Database
 import play.api.libs.json.JsValue
+import services.ChatRoomService
 import anorm._
 import anorm.SqlParser._
 
 
 @Singleton
-class RoomController @Inject()(cc: ControllerComponents, system: ActorSystem, materializer: Materializer)(database: Database) extends AbstractController(cc) {
+class RoomController @Inject()(cc: ControllerComponents, system: ActorSystem, materializer: Materializer, chatRoomService: ChatRoomService)(database: Database) extends AbstractController(cc) {
 
   val chatRoomParser = get[Long]("room_id") ~ get[String]("description") ~ get[DateTime]("created_time")
 
@@ -40,5 +42,6 @@ class RoomController @Inject()(cc: ControllerComponents, system: ActorSystem, ma
 
   def connect(id: Long) = WebSocket.accept[JsValue, JsValue] { request =>
       ActorFlow.actorRef(out => ChatRoomActor.props(out))(system, materializer)
+        .viaMat(chatRoomService.join(id, materializer))(Keep.right)
   }
 }
