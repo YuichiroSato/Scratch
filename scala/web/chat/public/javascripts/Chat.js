@@ -1,5 +1,25 @@
 let webSocket = null
 
+function fetchLog() {
+    const apiUrl = 'http://' + window.location.host + window.location.pathname + '/log'
+    fetch(apiUrl)
+        .then(function(response) {
+          return response.json()
+        })
+        .then(function(data) {
+            data.texts.reverse().forEach(text => {
+                appendList(text)
+            })
+        })
+}
+
+function appendList(text) {
+    const chatList = document.getElementById("postList")
+    const newPost = document.createElement("li")
+    newPost.appendChild(document.createTextNode(text))
+    chatList.appendChild(newPost)
+}
+
 function connectWebSocket() {
     const apiUrl = 'ws://' + window.location.host + window.location.pathname + '/connect'
     webSocket = new WebSocket(apiUrl)
@@ -24,6 +44,7 @@ function sendMessage() {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+    fetchLog()
     connectWebSocket()
     document.getElementById("submitButton").addEventListener("click", sendMessage)
 })
