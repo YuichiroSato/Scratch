@@ -40,6 +40,10 @@ class RoomController @Inject()(cc: ControllerComponents, system: ActorSystem, ma
     }
   }
 
+  def getLog(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok(chatRoomService.getLog(id))
+  }
+
   def connect(id: Long) = WebSocket.accept[JsValue, JsValue] { request =>
       ActorFlow.actorRef(out => ChatRoomActor.props(out))(system, materializer)
         .viaMat(chatRoomService.join(id, materializer))(Keep.right)
