@@ -30,10 +30,7 @@ function connectWebSocket() {
 
     webSocket.onmessage = function(event) {
         const data = JSON.parse(event.data)
-        const chatList = document.getElementById("postList")
-        const newPost = document.createElement("li")
-        newPost.appendChild(document.createTextNode(data.text))
-        chatList.appendChild(newPost)
+        appendList(data.text)
         document.getElementById("submitText").value = ''
     }
 }
