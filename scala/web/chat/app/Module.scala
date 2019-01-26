@@ -7,5 +7,6 @@ class Module extends AbstractModule {
     bind(classOf[UserRepository]).to(classOf[RedisUserRepository])
     bind(classOf[UserLockRepository]).to(classOf[RedisUserLockRepository])
     bind(classOf[ChatRoomRepository]).to(classOf[AnormChatRoomRepository])
+    bind(classOf[ChatLogRepository]).to(classOf[RedisChatLogRepository])
   }
 }
