@@ -13,6 +13,7 @@ class LoginService @Inject()(userRepository: UserRepository, userLockRepository:
       if (locked) {
         val isRegistered = userRepository.contains(userName)
         if (isRegistered) {
+          userLockRepository.unlock()
           return Left("This user name is already registered.")
         } else {
           userRepository.add(userName)
