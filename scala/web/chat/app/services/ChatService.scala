@@ -46,7 +46,7 @@ class ChatService @Inject()(system: ActorSystem, materializer: Materializer)(cha
   }
 
   def connect(id: Long): Flow[Any, JsValue, UniqueKillSwitch] = {
-    ActorFlow.actorRef(out => ChatRoomActor.props(out))(system, materializer)
+    ActorFlow.actorRef(out => ChatRoomActor.props(out, id, this))(system, materializer)
       .viaMat(join(id))(Keep.right)
   }
 
