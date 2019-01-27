@@ -1,6 +1,7 @@
 package services
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 import actors.ChatRoomActor
 import akka.actor.ActorSystem
@@ -17,6 +18,7 @@ import scala.concurrent.duration._
 @Singleton
 class ChatService @Inject()(system: ActorSystem, materializer: Materializer)(chatLogRepository: ChatLogRepository) {
   val rooms = new ConcurrentHashMap[Long, Flow[JsValue, JsValue, UniqueKillSwitch]]()
+  val connectCounts = new ConcurrentHashMap[Long, AtomicInteger]()
 
   def getLog(id: Long): JsObject = {
     chatLogRepository.getPosts(id)
@@ -37,12 +39,23 @@ class ChatService @Inject()(system: ActorSystem, materializer: Materializer)(cha
         })
 
       rooms.putIfAbsent(id, flow)
+      connectCounts.putIfAbsent(id, new AtomicInteger())
     }
+    connectCounts.get(id).incrementAndGet()
     rooms.get(id)
   }
 
   def connect(id: Long): Flow[Any, JsValue, UniqueKillSwitch] = {
     ActorFlow.actorRef(out => ChatRoomActor.props(out))(system, materializer)
       .viaMat(join(id))(Keep.right)
+  }
+
+  def cleanUp(id: Long): Unit = {
+    if (connectCounts.get(id).get() < 2) {
+      rooms.remove(id)
+      connectCounts.remove(id)
+    } else {
+      connectCounts.get(id).decrementAndGet()
+    }
   }
 }
