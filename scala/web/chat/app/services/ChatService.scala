@@ -36,7 +36,7 @@ class ChatService @Inject()(system: ActorSystem, materializer: Materializer)(cha
           msg
         })
 
-      rooms.put(id, flow)
+      rooms.putIfAbsent(id, flow)
     }
     rooms.get(id)
   }
