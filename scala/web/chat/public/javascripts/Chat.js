@@ -33,6 +33,10 @@ function connectWebSocket() {
         appendList(data.text)
         document.getElementById("submitText").value = ''
     }
+
+    webSocket.onclose = function(event) {
+        console.log("接続を切断しました。")
+    }
 }
 
 function sendMessage() {
@@ -44,4 +48,8 @@ window.addEventListener('DOMContentLoaded', function() {
     fetchLog()
     connectWebSocket()
     document.getElementById("submitButton").addEventListener("click", sendMessage)
+})
+
+window.addEventListener('beforeunload', function() {
+    webSocket.close()
 })
