@@ -1,0 +1,86 @@
+<html>
+<head>
+    <title>Ping Pong</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        var uri = "ws://" + location.hostname + ":12345";
+        var webSocket = null;
+        var canvas = null;
+        var context = null;
+
+        function connect() {
+            webSocket = new WebSocket(uri);
+            webSocket.onmessage = onMessage;
+            canvas = document.getElementById("gameCanvas");
+            context = canvas.getContext('2d');
+        }
+
+        function onMessage(event) {
+            if (event && event.data) {
+                updateGame(JSON.parse(event.data));
+            }
+        }
+
+        function updateGame(data) {
+            var playerName = document.getElementById('playerName').innerText;
+            if (!playerName) {
+                var joinAs = document.getElementById('joinAs');
+                if (!data["is_player1_online"]) {
+                    joinAs.innerText = 'Player1';
+                } else if (data["is_player1_online"] && !data["is_player2_online"]) {
+                    joinAs.innerText = 'Player2';
+                } else {
+                    joinAs.innerText = 'Watcher';
+                }
+            }
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillRect(data["plate1"] - 10, 10, 10, 2);
+            context.fillRect(data["plate2"] - 10, 90, 10, 2);
+            context.fillRect(data["ballx"], data["bally"], 2, 2);
+        }
+
+        function onJoinClick() {
+            const joinAs = document.getElementById('joinAs').innerText;
+            if (!!joinAs) {
+                webSocket.send(encodeJson(joinAs, "Join", ""));
+                var playerName = document.getElementById('playerName');
+                playerName.innerText = joinAs;
+            } else {
+                webSocket.send(encodeJson("Watcher", "Nope", ""));
+            }
+        }
+
+        function onLeftClick() {
+            var playerName = document.getElementById('playerName').innerText;
+            webSocket.send(encodeJson(playerName, "Move", "left"));
+        }
+
+        function onRightClick() {
+            var playerName = document.getElementById('playerName').innerText;
+            webSocket.send(encodeJson(playerName, "Move", "right"));
+        }
+
+        function encodeJson(player, command, value) {
+            return '{"player": "' + player + '", "command": "' + command + '", "value": "' + value + '"}';
+        }
+        $(connect);
+    </script>
+</head>
+
+<body>
+    <h1>Ping Pong</h1>
+    <div>
+        You can join as <span id="joinAs"></span>
+        <input type="button" value="Join" onclick="onJoinClick()" />
+    </div>
+    <div>
+        You are <span id="playerName"></span>
+    </div>
+    <div>
+        <canvas id="gameCanvas" width="100" height="100" style="border:#000000 solid 1px;"></canvas>
+    </div>
+    <input type="button" value="Left" onclick="onLeftClick()" />
+    <input type="button" value="Right" onclick="onRightClick()" />
+</body>
+</html>
