@@ -1,0 +1,11 @@
+model test_model
+date 2000-04-10
+is_am True
+code 1000
+trim_interval 20
+data_size 10
+window_size 20
+iter 5
+chains 5
+output_file_name hoge
+key val
