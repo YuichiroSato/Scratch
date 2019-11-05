@@ -6,6 +6,11 @@ class GameOfLife(val xSize: Int, val ySize: Int) {
 
   private var cells = Array.ofDim[Int](xSize, ySize)
 
+  def toggleAlive(x: Int, y: Int): Unit = {
+    cells(x % xSize)(y % ySize) += GameOfLife.ALIVE
+    cells(x % xSize)(y % ySize) %= 2
+  }
+
   def evolve(): Unit = {
     val newCells = Array.ofDim[Int](xSize, ySize)
     for (x <- 0 until xSize) {
@@ -23,6 +28,10 @@ class GameOfLife(val xSize: Int, val ySize: Int) {
       }
     }
     cells = newCells
+  }
+
+  def clear(): Unit = {
+    cells = Array.ofDim[Int](xSize, ySize)
   }
 
   def randomize(fillRate: Double): Unit = {
@@ -50,6 +59,16 @@ class GameOfLife(val xSize: Int, val ySize: Int) {
 
   def getCells: Array[Array[Int]] = {
     cells
+  }
+
+  def setCells(cells: Array[Array[Int]]): Unit = {
+    this.cells = cells
+  }
+
+  def copy(): GameOfLife = {
+    val c = new GameOfLife(xSize, ySize)
+    c.setCells(cells.clone)
+    c
   }
 }
 
