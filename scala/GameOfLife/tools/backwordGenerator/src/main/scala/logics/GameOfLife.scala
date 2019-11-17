@@ -31,13 +31,15 @@ class GameOfLife(val xSize: Int, val ySize: Int) {
 
   def backward(): Unit = {
     val start = System.currentTimeMillis()
-    var bestCells = cells
+    var bestCells = new Cells(xSize, ySize)
     var bestBroken = countBroken(bestCells)
     var i = 0
-    val n = 100000
+    val n = 100000 * 100
     while (i < n && bestBroken != 0) {
-      println(s"$i best: $bestBroken")
-      val candidate = gen()
+      if (i % 1000 == 0) {
+        println(s"$i , elapsed timebest: ${(System.currentTimeMillis() - start) / 1000} , $bestBroken")
+      }
+      val candidate = gen(bestCells)
       val candidateBroken = countBroken(candidate)
       if (candidateBroken < bestBroken || Random.nextDouble() < 1.0 - i / n) {
         bestCells = candidate
@@ -51,29 +53,35 @@ class GameOfLife(val xSize: Int, val ySize: Int) {
     cells = bestCells
   }
 
-  private def gen(): Cells = {
+  private def gen(bestCells: Cells): Cells = {
     val newCells = new Cells(xSize, ySize)
 
     for (x <- 0 until xSize) {
       for (y <- 0 until ySize) {
         if (cells.isAlive(x, y)) {
-          val s = newCells.getScattering(x, y)
-          val count = newCells.countAlive(x, y)
+          val s = bestCells.getScattering(x, y)
+          val count = bestCells.countAlive(x, y)
           if (Random.nextDouble() < 0.5) {
             val n = 2 - count
             if (n > 0) {
-              s.addAlive(n)
-              newCells.allocate(s, x, y)
-              newCells.setAlive(x, y)
+              s.killCells(1)
+              s.addAlive(n + 1)
+            } else {
+              s.randomize(2)
             }
+            newCells.allocate(s, x, y)
+            newCells.setAlive(x, y)
           } else {
             val n = 3 - count
             if (n > 0) {
+              s.killCells(1)
+              s.addAlive(n + 1)
+            } else {
               s.randomize(3)
-              newCells.allocate(s, x, y)
-              if (Random.nextDouble() < 0.5) {
-                newCells.setDead(x, y)
-              }
+            }
+            newCells.allocate(s, x, y)
+            if (Random.nextDouble() < 0.5) {
+              newCells.setDead(x, y)
             }
           }
         }

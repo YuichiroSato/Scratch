@@ -49,6 +49,36 @@ class Scattering() {
     allocate(arr)
   }
 
+  def killCells(n: Int): Unit = {
+    val c = countAlive
+    if (c - n <= 0) {
+      scattering(0)(0) = 0
+      scattering(0)(1) = 0
+      scattering(0)(2) = 0
+      scattering(1)(0) = 0
+      scattering(1)(2) = 0
+      scattering(2)(0) = 0
+      scattering(2)(1) = 0
+      scattering(2)(2) = 0
+    } else {
+      var i = 0
+      val arr = serialize
+      while (i < n) {
+        var killAt = Random.nextInt(c - i)
+        for (j <- 0 until 8) {
+          if (arr(j) == Cells.ALIVE) {
+            killAt -= 1
+            if (killAt == 0) {
+              arr(j) = Cells.DEAD
+            }
+          }
+        }
+        i += 1
+      }
+      allocate(arr)
+    }
+  }
+
   def countAlive: Int = {
     scattering(0)(0) +
       scattering(0)(1) +
