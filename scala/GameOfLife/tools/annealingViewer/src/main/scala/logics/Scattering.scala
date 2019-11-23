@@ -52,12 +52,13 @@ class Scattering() {
       val arr = serialize
       while (i < n) {
         var killAt = Random.nextInt(c - i)
+        var aliveCount = 0
         for (j <- 0 until 8) {
           if (arr(j) == Cells.ALIVE) {
-            killAt -= 1
-            if (killAt == 0) {
+            if (aliveCount == killAt) {
               arr(j) = Cells.DEAD
             }
+            aliveCount += 1
           }
         }
         i += 1
