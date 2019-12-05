@@ -4,12 +4,14 @@ import java.awt.event.{ActionEvent, MouseAdapter, MouseEvent}
 import java.awt.{BorderLayout, Dimension, Graphics}
 
 import javax.swing._
-import logics.{Annealing, Annealing1, Cells, GameOfLife}
+import annealings._
+import logics._
 
 object Main extends App {
 
   val annealing = if (args.length == 1) {
     args(0) match {
+      case "0" => new Annealing0()
       case "1" => new Annealing1()
     }
   } else {

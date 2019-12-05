@@ -1,4 +1,6 @@
-package logics
+package annealings
+
+import logics.{Annealing, Cells}
 
 import scala.util.Random
 

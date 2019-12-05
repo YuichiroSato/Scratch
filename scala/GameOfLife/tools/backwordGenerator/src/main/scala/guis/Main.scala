@@ -3,8 +3,11 @@ package guis
 import java.awt.event.{ActionEvent, MouseAdapter, MouseEvent}
 import java.awt.{BorderLayout, Dimension, Graphics}
 
+import annealings.Annealing1
 import javax.swing._
 import logics.{Cells, GameOfLife}
+
+import scala.util.Random
 
 object Main extends App {
 
@@ -76,6 +79,7 @@ class GameOfLifePanel extends JPanel {
   var drawnGame: GameOfLife = null
   var generatedGame: GameOfLife = null
   var evolvedGame: GameOfLife = null
+  val annealing = new Annealing1()
   val cellSize = 20
   val headerSize = 100
   val titleBarSize = 35
@@ -119,10 +123,34 @@ class GameOfLifePanel extends JPanel {
   }
 
   def genGame(): Unit = {
-    this.generatedGame.setCells(this.drawnGame.getCells)
-    this.generatedGame.backward()
+    backward()
     this.state = GameOfLifePanel.GenState
     repaint()
+  }
+
+  private def backward(): Unit = {
+    val start = System.currentTimeMillis()
+    val baseCells = this.drawnGame.getCells
+    var bestCells = new Cells(this.generatedGame.xSize, this.generatedGame.ySize)
+    var bestBroken = this.annealing.countBroken(baseCells, bestCells)
+    var i = 0
+    val n = 100000 * 100
+    while (i < n && bestBroken != 0) {
+      if (i % 1000 == 0) {
+        println(s"$i , elapsed timebest: ${(System.currentTimeMillis() - start) / 1000} , $bestBroken")
+      }
+      val candidate = this.annealing.generate(baseCells, bestCells)
+      val candidateBroken = this.annealing.countBroken(baseCells, candidate)
+      if (candidateBroken < bestBroken || Random.nextDouble() < 1.0 - i / n) {
+        bestCells = candidate
+        bestBroken = candidateBroken
+      }
+      i += 1
+    }
+    val end = System.currentTimeMillis()
+    println(s"best: $bestBroken")
+    println(s"elapsed time: ${end - start}")
+    this.generatedGame.setCells(bestCells)
   }
 
   def evolveGame(): Unit = {

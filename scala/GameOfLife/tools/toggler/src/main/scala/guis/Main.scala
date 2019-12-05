@@ -4,7 +4,7 @@ import java.awt.event.{ActionEvent, MouseAdapter, MouseEvent}
 import java.awt.{BorderLayout, Dimension, Graphics}
 
 import javax.swing._
-import logics.GameOfLife
+import logics._
 
 object Main extends App {
 
@@ -63,13 +63,13 @@ class GameOfLifePanel extends JPanel {
     }
 
     val cells = if (this.isEvolved) {
-      gameOfLife.getCells
+      gameOfLife.getCells.getCells
     } else {
-      gameOfLifeBuk.getCells
+      gameOfLifeBuk.getCells.getCells
     }
     for (x <- 0 until gameOfLife.xSize) {
       for (y <- 0 until gameOfLife.ySize) {
-        if (cells(x)(y) == GameOfLife.ALIVE) {
+        if (cells(x)(y) == Cells.ALIVE) {
           g.fillRect(x * cellSize, headerSize + y * cellSize, cellSize, cellSize)
         } else {
           g.drawRect(x * cellSize, headerSize + y * cellSize, cellSize, cellSize)
