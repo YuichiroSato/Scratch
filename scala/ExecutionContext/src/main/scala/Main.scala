@@ -2,6 +2,9 @@ import java.util.concurrent.Executors
 
 import com.typesafe.scalalogging.Logger
 
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
+
 object Main {
 
   val logger = Logger(this.getClass)
@@ -16,8 +19,8 @@ object Main {
     System.currentTimeMillis() - startAt.get
   }
 
-  def task(n: Int): Runnable = {
-    () => {
+  def task(n: Int)(implicit ec: ExecutionContext): Future[Unit] = {
+    Future{
       logger.info(s"Task $n sleeping at ${elapsedTime()} [${Thread.currentThread().getName}]")
       Thread.sleep(5000)
       logger.info(s"Task $n awoke at ${elapsedTime()} [${Thread.currentThread().getName}]")
@@ -27,20 +30,21 @@ object Main {
   def main(args: Array[String]): Unit = {
     logger.info(s"Application start at ${elapsedTime()}")
 
-    val ex = Executors.newFixedThreadPool(3)
+    val threadPool = Executors.newFixedThreadPool(3)
+    implicit val ex = ExecutionContext.fromExecutor(threadPool)
     logger.info("Task 1 executing.")
-    ex.execute(task(1))
+    task(1)
     logger.info("Task 2 executing.")
-    ex.execute(task(2))
+    task(2)
     logger.info("Task 3 executing.")
-    ex.execute(task(3))
+    task(3)
     logger.info("Task 4 executing.")
-    ex.execute(task(4))
+    task(4)
     logger.info("Task 5 executing.")
-    ex.execute(task(5))
+    task(5)
     logger.info("Task 6 executing.")
-    ex.execute(task(6))
+    task(6)
 
-    ex.shutdown()
+    threadPool.shutdown()
   }
 }
