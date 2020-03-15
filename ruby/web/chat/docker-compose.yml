@@ -1,0 +1,11 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=chat_user
+      - POSTGRES_PASSWORD=chat_password
