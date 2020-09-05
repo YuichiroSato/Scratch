@@ -74,7 +74,8 @@ create table KokyakuKihon (
   update_ts datetime not null,
   primary key(kokyaku_no),
   foreign key(syokugyou_code) references Syokugyou(syokugyou_code),
-  foreign key(tantou_kouin_no) references Eigyouin(kouin_no)
+  foreign key(tantou_kouin_no) references Eigyouin(kouin_no),
+  check (gender in ('0', '1', '2'))
 );
 
 create table KokyakuSyousai (
@@ -161,5 +162,7 @@ create table Schedule (
   anken_no int,
   primary key(kouin_no, yotei_date, start_time, gyou_no),
   foreign key(kouin_no) references Eigyouin(kouin_no),
-  foreign key(shiten_code, anken_no) references Anken(shiten_code, anken_no)
+  foreign key(shiten_code, anken_no) references Anken(shiten_code, anken_no),
+  check (koudou_syubetu in ('1', '2', '3', '4', '5')),
+  check (start_time < end_time)
 );
