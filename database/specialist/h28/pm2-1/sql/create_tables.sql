@@ -25,7 +25,7 @@ create table Eigyouin (
 
 create table Kamoku (
   kamoku_code char(3) not null,
-  tamoku_name varchar(30) not null,
+  kamoku_name varchar(30) not null,
   update_ts datetime not null,
   primary key(kamoku_code)
 );
