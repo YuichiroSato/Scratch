@@ -156,7 +156,7 @@ create table Schedule (
   start_time datetime not null,
   gyou_no smallint not null,
   end_time datetime not null,
-  koudou_syubetu char(1),
+  koudou_syubetu char(1) not null,
   koudou_naiyou varchar(1000),
   shiten_code char(4),
   anken_no int,
