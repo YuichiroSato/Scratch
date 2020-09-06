@@ -8,7 +8,7 @@ docker exec -it pm21_db_1 bash
 ## How to create danabase
 
 ```
-mysql -u root -p'example" -P 3306 -e "create database bank_db"
+mysql -u root -p'example' -P 3306 -e "create database bank_db"
 ```
 
 ## How to create tables
