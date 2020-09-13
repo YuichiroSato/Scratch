@@ -1,1 +1,10 @@
+drop table if exists Toiawase;
+drop table if exists Hatuden_corporation;
+drop table if exists Gouki;
+drop table if exists Shita_kusa_kari_area;
+drop table if exists Sangyou_plant;
+drop table if exists Jutaku_plant;
+drop table if exists Hatuden_plant;
+drop table if exists Erea;
+drop table if exists End_user;
 drop table if exists Eigyousyo;
