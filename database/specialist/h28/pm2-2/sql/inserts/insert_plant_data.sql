@@ -43,10 +43,10 @@ insert into Sangyou_plant
   (pl_no, setti_type, hatuden_ryou)
 values
   ('pl002', 'k', 1),
-  ('pl003', 'n', 0);
+  ('pl003', 'm', 0);
 
-insert into Shita_kusa_kari_area
-  (pl_no, total_area)
+insert into Miriyou_plant
+  (pl_no, total_sita_kusa_kari_area)
 values
   ('pl003', 10);
 

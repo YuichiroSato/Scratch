@@ -28,7 +28,7 @@ create table Hatuden_plant (
   primary key(pl_no),
   foreign key(erea_no) references Erea(erea_no),
   foreign key(e_user_no) references End_user(e_user_no),
-  check(plant_type in ('j', 's'))
+  check(plant_type in ('j', 's')) -- j: 住宅プラント s: 産業プラント
 );
 
 create table Jutaku_plant (
@@ -45,12 +45,12 @@ create table Sangyou_plant (
   hatuden_ryou int not null default(0),
   primary key(pl_no),
   foreign key(pl_no) references Hatuden_plant(pl_no),
-  check(setti_type in ('k', 'n'))
+  check(setti_type in ('k', 'm')) -- k: 工場倉庫 m: 未利用地
 );
 
-create table Shita_kusa_kari_area (
+create table Miriyou_plant (
   pl_no char(5) not null,
-  total_area int not null default(0),
+  total_sita_kusa_kari_area int not null default(0),
   primary key(pl_no),
   foreign key(pl_no) references Sangyou_plant(pl_no)
 );
